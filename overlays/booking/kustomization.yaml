@@ -14,8 +14,8 @@ configMapGenerator:
   
 images:
 - name: <Docker_Username>/bookingeasyapp # Nahradený placeholder
-  newName: mendhak/http-https-echo        # Použijeme verejný testovací image
-  newTag: latest
+  newName: busybox # Zmena na veľmi známy image
+  newTag: 1.36.1   # Použij
 
 # Aplikácia zmien pre lokálne prostredie
 patches:
