@@ -11,5 +11,5 @@ resources:
 
 images:
   - name: <Docker_Username>/bookingeasyapp
-    newName: <Gloziksoft>/insuranceapp # <--- OPRAVA TU
+    newName: insuranceapp # <--- OPRAVA TU
     newTag: latest
