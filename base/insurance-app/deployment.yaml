@@ -24,7 +24,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: insurance-app-container
-        image: <Docker_Username>/insuranceapp:latest # Použije sa z kustomization.yaml
+        image: placeholder/insuranceapp:latest
         ports:
         - containerPort: 8080
         

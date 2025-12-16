@@ -1,4 +1,5 @@
-# git_ops-K8-config/base/booking-app/deployment.yaml
+# FILE: base/booking-app/deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +7,7 @@ metadata:
   labels:
     app: booking-app
 spec:
-  replicas: 2 
+  replicas: 2 # Pre vysokú dostupnosť
   selector:
     matchLabels:
       app: booking-app
@@ -15,6 +16,7 @@ spec:
       labels:
         app: booking-app
     spec:
+      # Pravidlo Antiaffinity na rozloženie Podov medzi rôzne Node/VM
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -23,32 +25,37 @@ spec:
                 app: booking-app
             topologyKey: "kubernetes.io/hostname"
       containers:
-      - name: booking-app-container
-        image: <Docker_Username>/bookingeasyapp:latest 
+      - name: placeholder/booking-app-container
+        # Placeholder Image, ktorý prepíšeme v overlays/prod
+        image: placeholder/bookingapp:lates
         ports:
-        - containerPort: 8081 # Port 8081
+        - containerPort: 8081 # Predpokladaný iný port, ako pre Insurance App
         
+        # --- Kľúčové pre stabilitu (Resource Limits) ---
         resources:
           requests:
-            memory: "64Mi"
+            memory: "64Mi" 
             cpu: "100m"
           limits:
-            memory: "192Mi"
+            memory: "192Mi" 
             cpu: "500m"
-            
+        # ---------------------------------------------
+        
         env:
         # --- ENV pre PostgreSQL Secret (postgresql-secret) ---
         - name: DATABASE_HOST
-          value: postgresql-service
+          value: postgresql-service # Service pre PostgreSQL
         - name: DATABASE_USER
           valueFrom:
             secretKeyRef:
               name: postgresql-secret
-              key: postgres-user
+              key: postgresql-user
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: postgresql-secret
-              key: postgres-password
+              key: postgresql-password
         - name: DATABASE_NAME
           value: booking_db
+        # ... Ak by Booking App potrebovala Mail Secret, pridali by ste ho sem.
+        # Pre jednoduchosť predpokladáme, že ho nepotrebuje.

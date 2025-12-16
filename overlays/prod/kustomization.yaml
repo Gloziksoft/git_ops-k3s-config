@@ -1,0 +1,13 @@
+# FILE: overlays/prod/kustomization.yaml
+
+# Tento súbor je kľúčový. Obsahuje referencie na všetky podadresáre (aplikácie),
+# ktoré tvoria kompletné produkčné prostredie.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# resources: odkazuje na podadresáre, kde sú Kustomize súbory pre jednotlivé aplikácie.
+resources:
+# Tieto podadresáre (overlays/prod/insurance-app) ešte musíme vytvoriť!
+- insurance-app
+- booking-app

@@ -1,15 +1,21 @@
-# git_ops-K8-config/base/booking-app/db-service.yaml
+# FILE: base/booking-app/db-service.yaml
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgresql-service # Odkaz pre aplikáciu (DATABASE_HOST)
+  name: postgresql-service # Názov Service MUSÍ zodpovedať DATABASE_HOST v deployment.yaml
   labels:
-    app: postgresql-service
+    app: postgresql
 spec:
-  clusterIP: None 
+  type: ClusterIP 
+  
+  # Definuje, na ktoré Pody Service smeruje (podľa app: postgresql label zo StatefulSetu)
   selector:
-    app: postgresql-booking # Musí sedieť so StatefulSet
+    app: postgresql
+  
+  # Mapovanie portov
   ports:
-    - port: 5432
-      targetPort: 5432
-      protocol: TCP
+    - protocol: TCP
+      port: 5432         # Štandardný PostgreSQL port
+      targetPort: 5432   # Port PostgreSQL kontajnera
+      name: postgresql

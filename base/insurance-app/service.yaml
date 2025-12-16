@@ -1,14 +1,22 @@
-# git_ops-K8-config/base/insurance-app/service.yaml
+# FILE: base/insurance-app/service.yaml
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: insurance-app-service
-spec:
-  # Typ service sa bude líšiť v overlays
-  type: ClusterIP 
-  selector:
+  name: insurance-app-service # Názov Service
+  labels:
     app: insurance-app
+spec:
+  # V Base používame ClusterIP. Externé vystavenie (LoadBalancer/NodePort) sa nastaví v Overlay.
+  type: ClusterIP 
+  
+  # Definuje, na ktoré Pody Service smeruje (podľa app: insurance-app label)
+  selector:
+    app: insurance-app 
+  
+  # Mapovanie portov
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8080
+      port: 80         # Port Service v klastri (napr. pre Ingress)
+      targetPort: 8080 # Port kontajnera (definovaný v deployment.yaml)
+      name: http-8080

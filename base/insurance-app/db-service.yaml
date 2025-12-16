@@ -1,17 +1,23 @@
-# git_ops-K8-config/base/insurance-app/db-service.yaml
+# FILE: base/insurance-app/db-service.yaml
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: mariadb-service # <--- KĽÚČOVÁ ZMENA: Odkaz pre aplikáciu
+  name: mariadb-service # Názov Service MUSÍ zodpovedať DATABASE_HOST v deployment.yaml
   labels:
-    app: mariadb-service # Pridávame label pre konzistenciu
+    app: mariadb
 spec:
-  # Typ service je Headless pre StatefulSet, zabezpečuje stabilné názvy
-  clusterIP: None 
+  # Headless Service je odporúčaný pre StatefulSets,
+  # ale pre jednoduchú inštaláciu MariaDB postačuje ClusterIP.
+  type: ClusterIP 
   
+  # Definuje, na ktoré Pody Service smeruje (podľa app: mariadb label zo StatefulSetu)
   selector:
-    app: mariadb-insurance # <--- KĽÚČOVÁ ZMENA: Musí sedieť so StatefulSet
+    app: mariadb
+  
+  # Mapovanie portov
   ports:
-    - port: 3306
-      targetPort: 3306
-      protocol: TCP
+    - protocol: TCP
+      port: 3306         # Štandardný MariaDB port
+      targetPort: 3306   # Port MariaDB kontajnera
+      name: mariadb

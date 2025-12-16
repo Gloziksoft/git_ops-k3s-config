@@ -1,0 +1,30 @@
+# FILE: argocd/app-project.yaml (OPRAVENÁ VERZIA)
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: gitops-project
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1" 
+spec:
+  description: Projekt pre GitOps aplikácie Insurance a Booking App
+  
+  # Zdroje (Source Repositories)
+  sourceRepos:
+  - '*' 
+
+  # Ciele (Destination Clusters)
+  destinations:
+  - namespace: default 
+    server: https://kubernetes.default.svc 
+
+  # Povolené objekty v klastri (Whitelist)
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+
+  # Povolené namespacy
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'

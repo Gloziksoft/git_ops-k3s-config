@@ -1,57 +1,68 @@
-# git_ops-K8-config/base/booking-app/postgresql-statefulset.yaml
+# FILE: base/booking-app/postgresql-statefulset.yaml
+
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgresql-booking-app
   labels:
-    app: postgresql-booking
+    app: postgresql
+    tier: database
 spec:
-  serviceName: "postgresql-service"
-  replicas: 1 
+  serviceName: postgresql-service # Musí zodpovedať Service, ktorú urobíme neskôr
+  replicas: 1
   selector:
     matchLabels:
-      app: postgresql-booking
+      app: postgresql
   template:
     metadata:
       labels:
-        app: postgresql-booking
+        app: postgresql
+        tier: database
     spec:
       containers:
-      - name: postgresql
-        image: postgres:14
+      - name: postgresql-container
+        image: postgres:14.7 # Stabilná verzia pre produkciu
         ports:
-        - containerPort: 5432
+        - containerPort: 5432 # Štandardný port pre PostgreSQL
+          name: postgresql
         
+        # Pripojenie na Volume Mount
+        volumeMounts:
+        - name: postgresql-volume
+          mountPath: /var/lib/postgresql/data # Štandardná cesta pre dáta PostgreSQL
+        
+        # --- Environment Variables pre PostgreSQL ---
+        # Využíva Secret, ktorý ešte len definujeme!
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key: postgresql-user # Kľúč pre aplikačného používateľa
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secret
+              key: postgresql-password # Kľúč pre heslo aplikačného používateľa
+        - name: POSTGRES_DB
+          value: booking_db
+        
+        # --- Limity na VM ---
         resources:
           requests:
+            cpu: "100m"
             memory: "128Mi"
-            cpu: "150m"
           limits:
+            cpu: "500m"
             memory: "512Mi"
-            cpu: "1000m"
-
-        env:
-          - name: POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: postgresql-secret
-                key: postgres-user
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: postgresql-secret
-                key: postgres-password
-          - name: POSTGRES_DB
-            value: booking_db
-              
-        volumeMounts:
-        - name: postgresql-persistent-storage
-          mountPath: /var/lib/postgresql/data
+            
+  # --- Definícia Perzistentného Úložiska (Persistent Volume Claim) ---
   volumeClaimTemplates:
   - metadata:
-      name: postgresql-persistent-storage
+      name: postgresql-volume
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes: [ "ReadWriteOnce" ] 
+      storageClassName: standard # Použite storageClassName, ktoré podporuje váš klaster
       resources:
         requests:
-          storage: 5Gi
+          storage: 5Gi # Požadovaná veľkosť disku

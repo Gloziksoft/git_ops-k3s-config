@@ -1,12 +1,13 @@
+# FILE: base/insurance-app/kustomization.yaml
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+# resources: Definuje všetky základné manifesty, ktoré tvoria túto aplikáciu.
+# Tieto súbory sú v rovnakom adresári (base/insurance-app/).
 resources:
 - deployment.yaml
 - service.yaml
-# ... (ďalšie zdroje pre app) ...
-
-# Nastavenie, kde bude Kustomize vedieť, ktoré image meniť
-images:
-- name: <Docker_Username>/insuranceapp # Meno image bez tagu
-  newName: insuranceapp # <--- OPRAVA TU
-  newTag: latest
+- mariadb-statefulset.yaml
+- mariadb-secret.yaml # Váš pôvodný súbor mal názov mail-secret.yaml, ale predpokladám, že slúži pre DB heslo
+- db-service.yaml

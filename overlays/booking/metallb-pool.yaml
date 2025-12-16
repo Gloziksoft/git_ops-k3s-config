@@ -1,9 +1,0 @@
-# git_ops-K8-config/overlays/local/metallb-pool.yaml
-# Tento súbor bude použitý ako ConfigMap pre MetalLB
-config: |
-  address-pools:
-  - name: default
-    protocol: layer2
-    addresses:
-    # !!! DÔLEŽITÉ: VYBERTE IP ADRESY Z VAŠEJ LOKÁLNEJ SIETE, KTORÉ SÚ MIMO DHCP ROZSAHU !!!
-    - 192.168.1.240-192.168.1.250

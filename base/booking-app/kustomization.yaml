@@ -1,15 +1,13 @@
-# git_ops-K8-config/base/booking-app/kustomization.yaml
+# FILE: base/booking-app/kustomization.yaml
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# resources: Definuje všetky základné manifesty, ktoré tvoria túto aplikáciu.
+# Tieto súbory sú v rovnakom adresári (base/booking-app/).
 resources:
-  - db-service.yaml
-  - deployment.yaml
-  - service.yaml
-  - postgresql-statefulset.yaml
-  - postgresql-secret.yaml
-
-images:
-  - name: <Docker_Username>/bookingeasyapp
-    newName: insuranceapp # <--- OPRAVA TU
-    newTag: latest
+- deployment.yaml
+- service.yaml
+- postgresql-statefulset.yaml
+- postgresql-secret.yaml 
+- db-service.yaml

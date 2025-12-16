@@ -1,68 +1,74 @@
-# git_ops-K8-config/base/insurance-app/deployment.yaml
+# FILE: base/insurance-app/mariadb-statefulset.yaml
+
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: insurance-app-deployment
+  name: mariadb-insurance-app
   labels:
-    app: insurance-app
+    app: mariadb
+    tier: database
 spec:
-  replicas: 2 # Pripravené pre HA na dvoch Node (VM)
+  serviceName: mariadb-service # Musí zodpovedať Service (db-service.yaml)
+  replicas: 1
   selector:
     matchLabels:
-      app: insurance-app
+      app: mariadb
   template:
     metadata:
       labels:
-        app: insurance-app
+        app: mariadb
+        tier: database
     spec:
-      affinity: # Pravidlo Antiaffinity pre rozloženie medzi VM
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: insurance-app
-            topologyKey: "kubernetes.io/hostname"
       containers:
-      - name: insurance-app-container
-        image: <Docker_Username>/insuranceapp:latest # Použije sa z kustomization.yaml
+      - name: mariadb-container
+        image: mariadb:10.11 # Stabilná verzia pre produkciu
         ports:
-        - containerPort: 8080
+        - containerPort: 3306
+          name: mariadb
         
-        # --- Kľúčové pre stabilitu na VM s 1GB RAM ---
-        resources:
-          requests:
-            memory: "64Mi" # Minimálna požadovaná pamäť
-            cpu: "100m"
-          limits:
-            memory: "192Mi" # Maximálna povolená pamäť
-            cpu: "500m"
-        # ---------------------------------------------
+        volumeMounts:
+        - name: mariadb-volume
+          mountPath: /var/lib/mysql 
         
+        # --- Environment Variables pre MariaDB ---
         env:
-        # --- ENV pre MariaDB Secret (mariadb-secret) ---
-        - name: DATABASE_HOST
-          value: mariadb-service
-        - name: DATABASE_USER
+        # Používa Secret, ktorý ešte len definujeme!
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-root-password 
+        - name: MARIADB_USER
           valueFrom:
             secretKeyRef:
               name: mariadb-secret
               key: mariadb-user
-        - name: DATABASE_PASSWORD
-          valueFrom: # Doplňujeme heslo pre pripojenie k DB
+        - name: MARIADB_PASSWORD
+          valueFrom:
             secretKeyRef:
               name: mariadb-secret
               key: mariadb-password
-        - name: DATABASE_NAME
+        - name: MARIADB_DATABASE
           value: insurance_db
-          
-        # --- ENV pre Mail Secret (mail-secret) ---
-        - name: SMTP_HOST
-          valueFrom:
-            secretKeyRef:
-              name: mail-secret
-              key: smtp-host
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mail-secret
-              key: smtp-password
+        
+        # --- Limity na VM ---
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+            
+  # --- Definícia Perzistentného Úložiska (Persistent Volume Claim) ---
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ] 
+      # Zvoľte triedu úložiska pre K3s/Minikube. Ak používate K3s, 'local-path' je default.
+      # Použijeme 'standard', čo je bežný placeholder.
+      storageClassName: standard 
+      resources:
+        requests:
+          storage: 5Gi

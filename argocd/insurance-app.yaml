@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: insurance-app
+  name: insurance-app-prod
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/Gloziksoft/git_ops-K8-config/settings/keys
-    targetRevision: HEAD
-    path: overlays/local # Sleduje Kustomize overlay
+    repoURL: https://github.com/Gloziksoft/git_ops-K8-config
+    targetRevision: main
+    path: overlays/prod/insurance-app
   destination:
     server: https://kubernetes.default.svc
     namespace: insurance-app
@@ -16,5 +16,4 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-    - CreateNamespace=true
+

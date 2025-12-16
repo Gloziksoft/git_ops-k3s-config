@@ -1,15 +1,22 @@
-# git_ops-K8-config/base/booking-app/service.yaml
+# FILE: base/booking-app/service.yaml
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: booking-app-service
+  name: booking-app-service # Názov Service
   labels:
     app: booking-app
 spec:
+  # V Base používame ClusterIP. Externé vystavenie sa rieši v Overlay.
   type: ClusterIP 
+  
+  # Definuje, na ktoré Pody Service smeruje
   selector:
-    app: booking-app
+    app: booking-app 
+  
+  # Mapovanie portov
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8081
+      port: 80         # Port Service
+      targetPort: 8081 # Port kontajnera (definovaný v deployment.yaml)
+      name: http-8081
