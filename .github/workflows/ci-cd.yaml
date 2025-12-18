@@ -25,15 +25,16 @@ jobs:
 
       - name: Build and push booking-app
         run: |
-          docker build -t ghcr.io/gloziksoft/git_ops-k8-config/booking-app:latest base/booking-app
+          docker build -f base/booking-app/Dockerfile -t ghcr.io/gloziksoft/git_ops-k8-config/booking-app:latest base/booking-app
           docker push ghcr.io/gloziksoft/git_ops-k8-config/booking-app:latest
 
       - name: Build and push insurance-app
         run: |
-          docker build -t ghcr.io/gloziksoft/git_ops-k8-config/insurance-app:latest base/insurance-app
+          docker build -f base/insurance-app/Dockerfile -t ghcr.io/gloziksoft/git_ops-k8-config/insurance-app:latest base/insurance-app
           docker push ghcr.io/gloziksoft/git_ops-k8-config/insurance-app:latest
 
       - name: Update Kustomize overlays with new images
         run: |
           sed -i "s|newName: .*booking-app|newName: ghcr.io/gloziksoft/git_ops-k8-config/booking-app|" overlays/prod/booking-app/kustomization.yaml
           sed -i "s|newName: .*insurance-app|newName: ghcr.io/gloziksoft/git_ops-k8-config/insurance-app|" overlays/prod/insurance-app/kustomization.yaml
+
