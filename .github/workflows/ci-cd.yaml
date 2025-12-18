@@ -8,12 +8,15 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Docker
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Container Registry
@@ -21,20 +24,12 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push booking-app
+      - name: Build and push apps
         run: |
-          docker build -f base/booking-app/Dockerfile -t ghcr.io/gloziksoft/git_ops-k8-config/booking-app:latest base/booking-app
-          docker push ghcr.io/gloziksoft/git_ops-k8-config/booking-app:latest
-
-      - name: Build and push insurance-app
-        run: |
-          docker build -f base/insurance-app/Dockerfile -t ghcr.io/gloziksoft/git_ops-k8-config/insurance-app:latest base/insurance-app
-          docker push ghcr.io/gloziksoft/git_ops-k8-config/insurance-app:latest
-
-      - name: Update Kustomize overlays with new images
-        run: |
-          sed -i "s|newName: .*booking-app|newName: ghcr.io/gloziksoft/git_ops-k8-config/booking-app|" overlays/prod/booking-app/kustomization.yaml
-          sed -i "s|newName: .*insurance-app|newName: ghcr.io/gloziksoft/git_ops-k8-config/insurance-app|" overlays/prod/insurance-app/kustomization.yaml
-
+          docker build -f base/booking-app/Dockerfile -t ghcr.io/${{ github.repository_owner }}/booking-app:latest base/booking-app
+          docker push ghcr.io/${{ github.repository_owner }}/booking-app:latest
+          
+          docker build -f base/insurance-app/Dockerfile -t ghcr.io/${{ github.repository_owner }}/insurance-app:latest base/insurance-app
+          docker push ghcr.io/${{ github.repository_owner }}/insurance-app:latest
