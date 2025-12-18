@@ -1,9 +1,11 @@
-# FILE: overlays/prod/insurance-app/service-patch.yaml
-
 apiVersion: v1
 kind: Service
 metadata:
   name: insurance-app-service
 spec:
-  # Prepíše sa hodnota 'type' z 'ClusterIP' na 'LoadBalancer'
   type: LoadBalancer
+  ports:
+    - name: http
+      port: 83          # Port, ktorý zadáš do prehliadača (localhost:83)
+      targetPort: 8080  # Väčšinou býva rovnaký ako pri prvej appke, ak sú to podobné microservices
+      protocol: TCP

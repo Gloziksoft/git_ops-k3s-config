@@ -6,6 +6,6 @@ spec:
   type: LoadBalancer
   ports:
     - name: http
-      port: 80
-      targetPort: 8081
-
+      port: 82          # Port, ktorý zadáš do prehliadača (localhost:82)
+      targetPort: 8080  # Port, na ktorom beží tvoj kód v Dockerfile (skontroluj či je 8080)
+      protocol: TCP
