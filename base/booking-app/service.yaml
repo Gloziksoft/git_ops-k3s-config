@@ -16,7 +16,7 @@ spec:
   
   # Mapovanie portov
   ports:
-      name: http
     - protocol: TCP
       port: 80         # Port Service
       targetPort: 8081 # Port kontajnera (definovaný v deployment.yaml)
+      name: http-8081
