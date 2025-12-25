@@ -31,7 +31,6 @@ spec:
 
       containers:
       - name: insurance-app-container
-        # Opravené: Správna cesta k tvojmu obrazu
         image: ghcr.io/gloziksoft/git_ops-k8-config/insurance-app:latest
         ports:
         - containerPort: 8080
