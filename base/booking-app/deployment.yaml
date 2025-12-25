@@ -52,7 +52,5 @@ spec:
             secretKeyRef:
               name: postgresql-secret
               key: postgresql-password
-        - name: SPRING_JPA_DATABASE_PLATFORM
-          value: "org.hibernate.dialect.PostgreSQLDialect"
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-          value: "update"
+          value: "none"
