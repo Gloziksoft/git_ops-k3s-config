@@ -47,7 +47,7 @@ spec:
         # --- DATABÁZA ---
         # Spring Boot automaticky použije túto URL na pripojenie k MariaDB
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mariadb://mariadb-service.insurance-app.svc.cluster.local:3306/insurance_db
+          value: jdbc:mariadb://mariadb-service:3306/insurance_db
         
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
