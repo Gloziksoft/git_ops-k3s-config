@@ -1,5 +1,3 @@
-# FILE: base/booking-app/deployment.yaml
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,22 +14,29 @@ spec:
       labels:
         app: booking-app
     spec:
-      # Pravidlo Antiaffinity na rozloženie Podov medzi rôzne Node/VM
+      # Upravené na preferred, aby sa oba Pody zmestili na jeden Node (tvoj notebook)
       affinity:
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                app: booking-app
-            topologyKey: "kubernetes.io/hostname"
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: booking-app
+              topologyKey: "kubernetes.io/hostname"
+      
+      # Pridaný tajný kľúč pre prístup k GitHub Container Registry (GHCR)
+      imagePullSecrets:
+        - name: ghcr-login-secret
+
       containers:
       - name: booking-app-container
-        # Placeholder Image, ktorý prepíšeme v overlays/prod
+        # Tento placeholder prepisuješ v overlays/prod/booking-app/kustomization.yaml
         image: bookingapp:lates
         ports:
-        - containerPort: 8081 # Predpokladaný iný port, ako pre Insurance App
+        - containerPort: 8081
         
-        # --- Kľúčové pre stabilitu (Resource Limits) ---
+        # Resource Limits pre stabilitu na ASUS notebooku
         resources:
           requests:
             memory: "64Mi" 
@@ -39,12 +44,11 @@ spec:
           limits:
             memory: "192Mi" 
             cpu: "500m"
-        # ---------------------------------------------
         
         env:
-        # --- ENV pre PostgreSQL Secret (postgresql-secret) ---
+        # Konfigurácia pripojenia k PostgreSQL
         - name: DATABASE_HOST
-          value: postgresql-service # Service pre PostgreSQL
+          value: postgresql-service
         - name: DATABASE_USER
           valueFrom:
             secretKeyRef:
@@ -57,5 +61,3 @@ spec:
               key: postgresql-password
         - name: DATABASE_NAME
           value: booking_db
-        # ... Ak by Booking App potrebovala Mail Secret, pridali by ste ho sem.
-        # Pre jednoduchosť predpokladáme, že ho nepotrebuje.
