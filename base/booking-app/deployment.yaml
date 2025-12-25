@@ -25,9 +25,9 @@ spec:
                 app: booking-app
             topologyKey: "kubernetes.io/hostname"
       containers:
-      - name: placeholder/booking-app-container
+      - name: booking-app-container
         # Placeholder Image, ktorý prepíšeme v overlays/prod
-        image: placeholder/bookingapp:lates
+        image: bookingapp:lates
         ports:
         - containerPort: 8081 # Predpokladaný iný port, ako pre Insurance App
         
