@@ -68,7 +68,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ] 
       # Zvoľte triedu úložiska pre K3s/Minikube. Ak používate K3s, 'local-path' je default.
       # Použijeme 'standard', čo je bežný placeholder.
-      storageClassName: standard 
+      storageClassName: "local-path" 
       resources:
         requests:
           storage: 5Gi
