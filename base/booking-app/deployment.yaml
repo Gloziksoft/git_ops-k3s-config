@@ -43,12 +43,12 @@ spec:
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:postgresql://postgresql-service:5432/booking_db"
         - name: SPRING_DATASOURCE_USERNAME
-          valueFrom: "admin"
+          value: "peto7724@gmail.com"
             secretKeyRef:
               name: postgresql-secret
               key: postgresql-user
         - name: SPRING_DATASOURCE_PASSWORD
-          valueFrom: "password123"
+          value: "root"
             secretKeyRef:
               name: postgresql-secret
               key: postgresql-password
