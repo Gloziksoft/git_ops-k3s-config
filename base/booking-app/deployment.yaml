@@ -31,15 +31,15 @@ spec:
 
       containers:
       - name: booking-app-container
-        image: bookingapp:lates
+        image: bookingapp:latest
         ports:
         - containerPort: 8081
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "100m"
+            memory: "256Mi"
+            cpu: "200m"
           limits:
-            memory: "192Mi"
+            memory: "512Mi"
             cpu: "500m"
         env:
         - name: DATABASE_HOST
