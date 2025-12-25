@@ -1,22 +1,15 @@
-# FILE: base/booking-app/service.yaml
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: booking-app-service # Názov Service
+  name: booking-app-service
   labels:
     app: booking-app
 spec:
-  # V Base používame ClusterIP. Externé vystavenie sa rieši v Overlay.
-  type: ClusterIP 
-  
-  # Definuje, na ktoré Pody Service smeruje
+  type: ClusterIP
   selector:
-    app: booking-app 
-  
-  # Mapovanie portov
+    app: booking-app
   ports:
     - protocol: TCP
-      port: 80         # Port Service
-      targetPort: 8080 # Port kontajnera (definovaný v deployment.yaml)
-      name: http-8081
+      port: 80         # Port, na ktorom počúva služba v klastri
+      targetPort: 8080 # Musí smerovať na containerPort v Deploymente
+      name: http

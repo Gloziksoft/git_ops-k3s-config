@@ -14,7 +14,6 @@ spec:
       labels:
         app: booking-app
     spec:
-      # OPRAVA 1: Zmena na 'preferred', aby oba pody bežali na tvojom ASUS notebooku
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -25,24 +24,22 @@ spec:
                   app: booking-app
               topologyKey: "kubernetes.io/hostname"
 
-      # OPRAVA 2: Musíš povedať Deploymentu, aby použil ten secret, čo už máš v klastri
       imagePullSecrets:
         - name: ghcr-login-secret
 
       containers:
       - name: booking-app-container
-        image: bookingapp:latest # Kustomize toto nahradí tvojím ghcr.io obrazom
+        image: bookingapp:latest 
         ports:
-        - containerPort: 8081
+        - containerPort: 8080 # ZMENENÉ: Musí sedieť s Tomcatom v Spring Boote
         resources:
           requests:
-            memory: "128Mi" # Znížené, aby sa v klastri uvoľnilo miesto pre Postgres
+            memory: "256Mi"
             cpu: "100m"
           limits:
-            memory: "512Mi" # Horná hranica, aby appka nezomrela pri štarte
+            memory: "512Mi"
             cpu: "500m"
         env:
-        # Spring Boot konfigurácia pre pripojenie k Postgresu
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:postgresql://postgresql-service:5432/booking_db"
         - name: SPRING_DATASOURCE_USERNAME
@@ -55,11 +52,7 @@ spec:
             secretKeyRef:
               name: postgresql-secret
               key: postgresql-password
-        
-        # FIX: Toto opraví chybu "Unable to determine Dialect" z tvojich logov
         - name: SPRING_JPA_DATABASE_PLATFORM
           value: "org.hibernate.dialect.PostgreSQLDialect"
-        
-        # Toto zabezpečí, že Hibernate automaticky vytvorí tabuľky v DB
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: "update"
