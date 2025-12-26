@@ -1,30 +1,43 @@
-# FILE: argocd/app-project.yaml (OPRAVENÁ VERZIA)
-
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: gitops-project
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1" 
+    # AppProject sa vytvorí skôr než Applications
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
-  description: Projekt pre GitOps aplikácie Insurance a Booking App
-  
-  # Zdroje (Source Repositories)
+  description: GitOps project for Booking and Insurance applications
+
+  # ------------------------------------------------------------
+  # Povolené Git repozitáre (SOURCE OF TRUTH)
+  # ------------------------------------------------------------
   sourceRepos:
-  - '*' 
+    - https://github.com/Gloziksoft/git_ops-K8-config
+    - https://github.com/Gloziksoft/Booking_EasyApp
+    - https://github.com/Gloziksoft/Insurance_App
 
-  # Ciele (Destination Clusters)
+  # ------------------------------------------------------------
+  # Povolené cieľové clustre / namespaces
+  # ------------------------------------------------------------
   destinations:
-  - namespace: default 
-    server: https://kubernetes.default.svc 
+    - namespace: booking-app
+      server: https://kubernetes.default.svc
+    - namespace: insurance-app
+      server: https://kubernetes.default.svc
 
-  # Povolené objekty v klastri (Whitelist)
-  clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
-
-  # Povolené namespacy
+  # ------------------------------------------------------------
+  # Namespace-scoped zdroje (bežné aplikácie)
+  # ------------------------------------------------------------
   namespaceResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: '*'
+      kind: '*'
+
+  # ------------------------------------------------------------
+  # Cluster-wide zdroje (MINIMUM – bezpečné)
+  # ------------------------------------------------------------
+  clusterResourceWhitelist:
+    # povolíme len vytváranie namespace (ak by si ho chcel cez GitOps)
+    - group: ''
+      kind: Namespace
+
