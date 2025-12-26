@@ -18,7 +18,7 @@ spec:
       imagePullSecrets:
         - name: ghcr-login-secret
       
-      # Affinity nastavené tak, aby preferovalo rôzne uzly, ale neblokovalo štart na jednom
+      # Affinity pre lepšiu distribúciu podov
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -31,6 +31,7 @@ spec:
 
       containers:
       - name: insurance-app-container
+        # Opravená cesta k obrazu podľa tvojho balíčka
         image: ghcr.io/gloziksoft/insuranceapp/insurance-app:latest
         ports:
         - containerPort: 8080
@@ -45,10 +46,13 @@ spec:
         
         env:
         # --- DATABÁZA ---
-        # Spring Boot automaticky použije túto URL na pripojenie k MariaDB
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mariadb://mariadb-service:3306/insurance_db
         
+        # Explicitné určenie drivera (toto vyrieši tvoju chybu z logov)
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: org.mariadb.jdbc.Driver
+
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
@@ -60,6 +64,12 @@ spec:
             secretKeyRef:
               name: mariadb-secret
               key: mariadb-password
+
+        # Nastavenie Hibernate pre správnu komunikáciu s MariaDB
+        - name: SPRING_JPA_DATABASE_PLATFORM
+          value: org.hibernate.dialect.MariaDBDialect
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: update
 
         # --- EMAIL (SMTP) ---
         - name: SPRING_MAIL_HOST
@@ -75,6 +85,5 @@ spec:
               key: smtp-password
 
         # --- DOPLNKOVÉ NASTAVENIA ---
-        # Ak aplikácia pri štarte hovorí, že nemá aktívny profil, toto ho nastaví na "default" alebo "prod"
         - name: SPRING_PROFILES_ACTIVE
           value: default
