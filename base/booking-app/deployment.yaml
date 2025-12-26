@@ -56,3 +56,5 @@ spec:
           value: "org.hibernate.dialect.PostgreSQLDialect"
         - name: SPRING_JPA_HIBERNATE_DDL_AUTO
           value: "update"
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
