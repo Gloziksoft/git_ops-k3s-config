@@ -3,6 +3,19 @@ kind: Application
 metadata:
   name: booking-app-prod
   namespace: argocd
+  annotations:
+    # 1️⃣ Ktorý image má updater sledovať
+    argocd-image-updater.argoproj.io/image-list: |
+      booking-app=ghcr.io/gloziksoft/booking_easyapp/booking-app
+
+    # 2️⃣ Ako vyberať nové verzie (bezpečne, nemenne)
+    argocd-image-updater.argoproj.io/booking-app.update-strategy: digest
+
+    # 3️⃣ Ako zapísať zmenu späť do gitu
+    argocd-image-updater.argoproj.io/write-back-method: git
+
+    # 4️⃣ Do ktorej vetvy infra repa má commitovať
+    argocd-image-updater.argoproj.io/write-back-target: branch:main
 spec:
   project: default
   source:
