@@ -6,8 +6,8 @@ kind: Kustomization
 # resources: Definuje všetky základné manifesty, ktoré tvoria túto aplikáciu.
 # Tieto súbory sú v rovnakom adresári (base/booking-app/).
 resources:
-- deployment.yaml
-- service.yaml
-- postgresql-statefulset.yaml
-- postgresql-secret.yaml 
-- db-service.yaml
+  - deployment.yaml
+  - service.yaml
+  - db-service.yaml
+  - postgresql-statefulset.yaml
+  - secrets/postgresql-secret.yaml
