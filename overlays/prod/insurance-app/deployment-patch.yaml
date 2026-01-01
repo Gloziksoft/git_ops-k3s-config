@@ -10,4 +10,4 @@ metadata:
     # Ďalšie anotácie: monitoring.prometheus/scrape: "true"
 spec:
   # Príklad: zmena počtu replík, ak by sa líšil od Base
-  replicas: 3 # Zvýšenie replík pre produkciu (z 2 v Base)
+  replicas: 1 # Zvýšenie replík pre produkciu (z 2 v Base)
