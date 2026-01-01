@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: insurance-app-service
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: insurance-app
   ports:
