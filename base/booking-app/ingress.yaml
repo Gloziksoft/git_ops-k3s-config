@@ -2,9 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: booking-ingress
-  annotations:
-    kubernetes.io/ingress.class: traefik
 spec:
+  ingressClassName: traefik 
   rules:
     - host: booking.localhost
       http:
@@ -16,4 +15,3 @@ spec:
                 name: booking-app-service
                 port:
                   number: 80
-
