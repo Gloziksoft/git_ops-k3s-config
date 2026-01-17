@@ -1,0 +1,4 @@
+resources:
+  - insurance-ingress.yaml
+  - booking-ingress.yaml
+
