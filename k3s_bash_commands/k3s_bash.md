@@ -54,7 +54,7 @@ kubectl apply -n argocd \
 🔹 Argo CD – prístup do web UI
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 
-
+yaXS3gL1ccpI3Vr6
 ➡️ Sprístupní Argo CD web na https://localhost:8080
 
 🔹 Argo CD – admin heslo (iba prvýkrát)

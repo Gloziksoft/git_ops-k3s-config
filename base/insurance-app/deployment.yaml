@@ -14,10 +14,7 @@ spec:
       labels:
         app: insurance-app
     spec:
-      # Povolenie na sťahovanie z tvojho GitHub Container Registry
-      imagePullSecrets:
-        - name: ghcr-login-secret
-      
+    
       # Affinity pre lepšiu distribúciu podov
       affinity:
         podAntiAffinity:
