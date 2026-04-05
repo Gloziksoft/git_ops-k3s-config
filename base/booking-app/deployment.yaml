@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: booking-app-deployment
-  namespace: booking-app       # ⬅️ odporúčané (rovnako ako insurance)
+  namespace: booking-app
   labels:
     app: booking-app
 
 spec:
-  replicas: 1               # ⬅️ k3s / 1-node cluster
+  replicas: 1
 
   selector:
     matchLabels:
@@ -39,13 +39,24 @@ spec:
       containers:
         - name: booking-app-container
           image: ghcr.io/gloziksoft/booking-app:prod
-          imagePullPolicy: IfNotPresent
-
           ports:
             - containerPort: 8080
-              name: http
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
+          # 🔥 TU JE FIX
+          envFrom:
+            - secretRef:
+                name: booking-mail-secret
 
           env:
+            # --- DATABASE ---
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgresql-service:5432/booking_db
 
@@ -61,24 +72,9 @@ spec:
                   name: postgresql-secret
                   key: postgresql-password
 
+            # --- APP PROFILE ---
             - name: SPRING_PROFILES_ACTIVE
               value: prod
-
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8080
-            initialDelaySeconds: 60
-            periodSeconds: 10
-            failureThreshold: 3
 
           livenessProbe:
             httpGet:
@@ -86,4 +82,10 @@ spec:
               port: 8080
             initialDelaySeconds: 60
             periodSeconds: 10
-        
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10

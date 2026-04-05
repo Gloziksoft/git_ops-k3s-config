@@ -1,0 +1,86 @@
+apiVersion: ap  ps/v1
+kind: Deployment
+metadata:
+  name: insurance-app-deployment
+  labels:
+    app: insurance-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance-app
+  template:
+    metadata:
+      labels:
+        app: insurance-app
+    spec:
+    
+      # Affinity pre lepšiu distribúciu podov
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app: insurance-app
+              topologyKey: "kubernetes.io/hostname"
+
+      containers:
+      - name: insurance-app-container
+        # Opravená cesta k obrazu podľa tvojho balíčka
+        image: ghcr.io/gloziksoft/insurance-app:prod
+        ports:
+        - containerPort: 8080
+        
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        
+        env:
+        # --- DATABÁZA ---
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mariadb://mariadb-service:3306/insurance_db
+        
+        # Explicitné určenie drivera (toto vyrieši tvoju chybu z logov)
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: org.mariadb.jdbc.Driver
+
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-user
+        
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb-secret
+              key: mariadb-password
+
+        # Nastavenie Hibernate pre správnu komunikáciu s MariaDB
+        - name: SPRING_JPA_DATABASE_PLATFORM
+          value: org.hibernate.dialect.MariaDBDialect
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: update
+
+        # --- EMAIL (SMTP) ---
+        - name: SPRING_MAIL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mail-secret
+              key: smtp-host
+              
+        - name: SPRING_MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mail-secret
+              key: smtp-password
+
+        # --- DOPLNKOVÉ NASTAVENIA ---
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod
