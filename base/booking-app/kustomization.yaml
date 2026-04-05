@@ -11,3 +11,4 @@ resources:
   - db-service.yaml
   - postgresql-statefulset.yaml
   - secrets/postgresql-secret.yaml
+  - secrets/mail-secret.yaml
