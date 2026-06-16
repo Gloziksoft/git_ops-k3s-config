@@ -27,7 +27,7 @@ spec:
           # ⬇️ DÔLEŽITÉ: správny layout dát
           env:
             - name: POSTGRES_DB
-              value: booking_app
+              value: booking_db
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:

@@ -58,7 +58,7 @@ spec:
           env:
             # --- DATABASE ---
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgresql-service:5432/booking_app?currentSchema=booking_app
+              value: jdbc:postgresql://postgresql-service:5432/booking_db
 
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
