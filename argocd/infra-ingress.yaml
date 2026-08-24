@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Gloziksoft/git_ops-K8-config.git
+    repoURL: https://github.com/Gloziksoft/git_ops-k3s-config.git
     targetRevision: main
     path: infra/ingress
   destination:

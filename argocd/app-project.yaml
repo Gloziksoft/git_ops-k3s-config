@@ -13,7 +13,7 @@ spec:
   # Povolené Git repozitáre (SOURCE OF TRUTH)
   # ------------------------------------------------------------
   sourceRepos:
-    - https://github.com/Gloziksoft/git_ops-K8-config
+    - https://github.com/Gloziksoft/git_ops-k3s-config
     - https://github.com/Gloziksoft/Booking_EasyApp
     - https://github.com/Gloziksoft/Insurance_App
 

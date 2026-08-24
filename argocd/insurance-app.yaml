@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Gloziksoft/git_ops-K8-config
+    repoURL: https://github.com/Gloziksoft/git_ops-k3s-config
     targetRevision: main
     path: overlays/prod/insurance-app
   destination:

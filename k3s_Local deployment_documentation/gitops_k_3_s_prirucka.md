@@ -59,7 +59,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 ## 6. Struktúra Git repozitára pre GitOps
 ```
-git_ops-K8-config/
+git_ops-k3s-config/
 ├── base/              # základné manifesty
 │   └── insurance-app/
 │       ├── deployment.yaml
