@@ -21,6 +21,11 @@ spec:
         tier: database
 
     spec:
+      volumes:
+        - name: db-init-scripts
+          configMap:
+            name: mariadb-init-scripts
+
       containers:
         - name: mariadb-container
           image: mariadb:10.11
@@ -30,9 +35,13 @@ spec:
               name: mariadb
 
           volumeMounts:
-            # 📦 PERSISTENTNÉ DÁTA
+            # Persistentné dáta MariaDB
             - name: mariadb-volume
               mountPath: /var/lib/mysql
+
+            # Inicializačné SQL skripty
+            - name: db-init-scripts
+              mountPath: /docker-entrypoint-initdb.d
 
           env:
             - name: MARIADB_ROOT_PASSWORD
@@ -68,8 +77,9 @@ spec:
     - metadata:
         name: mariadb-volume
       spec:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: "local-path"
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-path
         resources:
           requests:
             storage: 5Gi
