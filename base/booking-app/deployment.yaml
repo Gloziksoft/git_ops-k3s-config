@@ -56,6 +56,19 @@ spec:
                 name: booking-mail-secret
 
           env:
+            # --- SMTP CREDENTIALS ---
+            - name: SPRING_MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: booking-mail-credentials
+                  key: SPRING_MAIL_USERNAME
+
+            - name: SPRING_MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booking-mail-credentials
+                  key: SPRING_MAIL_PASSWORD
+
             # --- DATABASE ---
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgresql-service:5432/booking_db
